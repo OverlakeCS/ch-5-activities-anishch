@@ -64,20 +64,28 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             else{
                 bool = false;
             }
-            if (bool == mQuestionBank[screenCount].isAnswerTrue()) { //if answer is correct
-                questionsCorrect++; //increase num of questions
-                bool = false; //set bool to false
-                showTop(toast.makeText(this, R.string.correct_toast, Toast.LENGTH_SHORT));
-                // shows correct
-            } else {
-                showTop(toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT));
-                //shows incorrect
-            }
+            checkAnswer(bool);
         }
         else{
-            screenCount++; //increments the screen
-            textView.setText(mQuestionBank[screenCount].getTextResId()); // shows following screen
+            updateQuestion();
         }
+    }
+
+    private void checkAnswer(boolean bool) {
+        if (bool == mQuestionBank[screenCount].isAnswerTrue()) { //if answer is correct
+            questionsCorrect++; //increase num of questions
+            bool = false; //set bool to false
+            showTop(toast.makeText(this, R.string.correct_toast, Toast.LENGTH_SHORT));
+            // shows correct
+        } else {
+            showTop(toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT));
+            //shows incorrect
+        }
+    }
+
+    private void updateQuestion() {
+        screenCount++; //increments the screen
+        textView.setText(mQuestionBank[screenCount].getTextResId()); // shows following screen
     }
 
     //helper method that takes a Toast and shows/displays it at the top
