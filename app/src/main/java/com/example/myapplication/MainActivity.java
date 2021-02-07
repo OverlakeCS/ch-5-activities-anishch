@@ -46,6 +46,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         textView = (TextView) findViewById(R.id.textview); //setting TextView equal to .xml
         // textview
         textView.setText(mQuestionBank[screenCount].getTextResId()); //set Text to Question text
+        textView.setOnClickListener(this);
         nextButton = (Button) findViewById(R.id.next_button); //Declaring JavaButton Equal to .xml
         // button
         nextButton.setOnClickListener(this); // make sure button is registering on click
@@ -55,7 +56,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) { // View - area on the screen which is also incidentally something
         // - happens when a 'click' is registered
         boolean bool;
-        if (v.getId() != R.id.next_button && v.getId() != R.id.prev_button) { //if not next
+        if (v.getId() == R.id.textview || v.getId() == R.id.next_button){
+            updateQuestion();
+        }
+        else if (v.getId() != R.id.next_button && v.getId() != R.id.prev_button) { //if not next
             if (v.getId() == R.id.button) { // is this the button
                 bool = true; //first button clicked
 
@@ -67,10 +71,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 bool = false;
             }
             checkAnswer(bool);
-        }
-        else if (v.getId() == R.id.next_button){
-            updateQuestion();
-            prevButton.setOnClickListener(this);
         }
         else if (v.getId() == R.id.prev_button){
             if (screenCount != 0){
@@ -95,6 +95,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private void updateQuestion() {
         screenCount++; //increments the screen
         textView.setText(mQuestionBank[screenCount].getTextResId()); // shows following screen
+        prevButton.setOnClickListener(this);
     }
 
     private void prevQuestion() {
