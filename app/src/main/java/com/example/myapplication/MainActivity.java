@@ -14,6 +14,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button true_button;
     Button false_button;
     Button nextButton;
+    Button prevButton;
     TextView textView;
     Toast toast;
     int questionsCorrect = 0;
@@ -38,6 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main); //set ContentView to what we have in layout/main
         true_button = (Button) findViewById(R.id.button); // Declaring JavaButton Equal To .xml
         // button
+        prevButton = (Button) findViewById(R.id.prev_button);
         false_button = (Button) findViewById(R.id.button2); // --
         true_button.setOnClickListener(this); // make sure the button is registering a click
         false_button.setOnClickListener(this); // --
@@ -53,7 +55,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void onClick(View v) { // View - area on the screen which is also incidentally something
         // - happens when a 'click' is registered
         boolean bool;
-        if (v.getId() != R.id.next_button) { //if not next
+        if (v.getId() != R.id.next_button && v.getId() != R.id.prev_button) { //if not next
             if (v.getId() == R.id.button) { // is this the button
                 bool = true; //first button clicked
 
@@ -66,9 +68,16 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             checkAnswer(bool);
         }
-        else{
+        else if (v.getId() == R.id.next_button){
             updateQuestion();
+            prevButton.setOnClickListener(this);
         }
+        else if (v.getId() == R.id.prev_button){
+            if (screenCount != 0){
+                prevQuestion();
+            }
+        }
+
     }
 
     private void checkAnswer(boolean bool) {
@@ -85,6 +94,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     private void updateQuestion() {
         screenCount++; //increments the screen
+        textView.setText(mQuestionBank[screenCount].getTextResId()); // shows following screen
+    }
+
+    private void prevQuestion() {
+        screenCount--; //increments the screen
         textView.setText(mQuestionBank[screenCount].getTextResId()); // shows following screen
     }
 
