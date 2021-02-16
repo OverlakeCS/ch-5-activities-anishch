@@ -3,6 +3,7 @@ package com.example.myapplication;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Toast toast;
     int questionsCorrect = 0;
     int screenCount = 0;
+    private static final String TAG = "MainActivity";
 
     private Question[] mQuestionBank = new Question[]{ //Questions Created
             new Question(R.string.questions_australia, true),
@@ -36,6 +38,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) { //at Start-Up
         super.onCreate(savedInstanceState); //open where phone once was
+        Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_main); //set ContentView to what we have in layout/main
         true_button = (Button) findViewById(R.id.button); // Declaring JavaButton Equal To .xml
         // button
@@ -50,6 +53,38 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         nextButton = (Button) findViewById(R.id.next_button); //Declaring JavaButton Equal to .xml
         // button
         nextButton.setOnClickListener(this); // make sure button is registering on click
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        Log.d(TAG, "onStart() called");
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.d(TAG, "onResume() called");
+    }
+
+    @Override
+    public void onPause(){
+        super.onPause();
+        Log.d(TAG, "onPause() called");
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        Log.d(TAG, "onStop() called");
+    }
+
+
+
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        Log.d(TAG, "onDestroy() called");
     }
 
     @Override
