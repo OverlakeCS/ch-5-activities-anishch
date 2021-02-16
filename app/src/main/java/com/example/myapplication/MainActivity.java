@@ -15,13 +15,15 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button true_button;
     Button false_button;
-    ImageButton nextButton;
-    ImageButton prevButton;
+    Button nextButton;
+    Button prevButton;
     TextView textView;
     Toast toast;
     int questionsCorrect = 0;
     int screenCount = 0;
+
     private static final String TAG = "MainActivity";
+    private static final String KEY_INDEX = "index";
 
     private Question[] mQuestionBank = new Question[]{ //Questions Created
             new Question(R.string.questions_australia, true),
@@ -34,16 +36,22 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     false),
     };
 
-    private int mCurrentIndex = 0;
+    boolean[] answered = new boolean[mQuestionBank.length];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //at Start-Up
         super.onCreate(savedInstanceState); //open where phone once was
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_main); //set ContentView to what we have in layout/main
+        if (savedInstanceState != null){
+            screenCount = savedInstanceState.getInt(KEY_INDEX, 0);
+        }
+        for (boolean booleans : answered){
+            booleans = false;
+        }
         true_button = (Button) findViewById(R.id.button); // Declaring JavaButton Equal To .xml
         // button
-        prevButton = (ImageButton) findViewById(R.id.prev_button);
+        prevButton = (Button) findViewById(R.id.prev_button);
         false_button = (Button) findViewById(R.id.button2); // --
         true_button.setOnClickListener(this); // make sure the button is registering a click
         false_button.setOnClickListener(this); // --
@@ -51,9 +59,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // textview
         textView.setText(mQuestionBank[screenCount].getTextResId()); //set Text to Question text
         textView.setOnClickListener(this);
-        nextButton = (ImageButton) findViewById(R.id.next_button); //Declaring JavaButton Equal to .xml
+        nextButton = (Button) findViewById(R.id.next_button); //Declaring JavaButton Equal to .xml
         // button
         nextButton.setOnClickListener(this); // make sure button is registering on click
+        if (answered[screenCount] == true){
+            block();
+        }
+        else{
+            open();
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        Log.i(TAG, "onSaveInstanceState");
+        savedInstanceState.putInt(KEY_INDEX, screenCount);
+
     }
 
     @Override
@@ -94,26 +116,60 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         boolean bool;
         if (v.getId() == R.id.textview || v.getId() == R.id.next_button){
             updateQuestion();
+            if (answered[screenCount] == false){
+                open();
+            }
+            else if (answered[screenCount] == true){
+                block();
+            }
         }
         else if (v.getId() != R.id.next_button && v.getId() != R.id.prev_button) { //if not next
-            if (v.getId() == R.id.button) { // is this the button
-                bool = true; //first button clicked
+            if (answered[screenCount] == false){
+                answered[screenCount] = true;
+                block();
+                if (v.getId() == R.id.button) { // is this the button
+                    bool = true; //first button clicked
 
-                //toast.setGravity(Gravity.TOP, 0, 0);
-            } else if (v.getId() == R.id.button2) {
-                bool = false; //second button clicked
+                    //toast.setGravity(Gravity.TOP, 0, 0);
+                } else if (v.getId() == R.id.button2) {
+                    bool = false; //second button clicked
+                }
+                else{
+                    bool = false;
+                }
+                checkAnswer(bool);
             }
             else{
-                bool = false;
+
             }
-            checkAnswer(bool);
         }
         else if (v.getId() == R.id.prev_button){
             if (screenCount != 0){
                 prevQuestion();
             }
+            if (answered[screenCount] == false){
+                open();
+            }
+            else if (answered[screenCount] == true){
+                block();
+            }
+
         }
 
+    }
+
+    private void block(){
+        true_button.setEnabled(false);
+        false_button.setEnabled(false);
+        true_button.setClickable(false);
+        false_button.setClickable(false);
+    }
+
+    private void open(){
+        true_button.setEnabled(true);
+        false_button.setEnabled(true);
+        true_button.setClickable(true);
+        false_button.setClickable(true);
     }
 
     private void checkAnswer(boolean bool) {
