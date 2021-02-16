@@ -7,6 +7,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -14,8 +15,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     Button true_button;
     Button false_button;
-    Button nextButton;
-    Button prevButton;
+    ImageButton nextButton;
+    ImageButton prevButton;
     TextView textView;
     Toast toast;
     int questionsCorrect = 0;
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main); //set ContentView to what we have in layout/main
         true_button = (Button) findViewById(R.id.button); // Declaring JavaButton Equal To .xml
         // button
-        prevButton = (Button) findViewById(R.id.prev_button);
+        prevButton = (ImageButton) findViewById(R.id.prev_button);
         false_button = (Button) findViewById(R.id.button2); // --
         true_button.setOnClickListener(this); // make sure the button is registering a click
         false_button.setOnClickListener(this); // --
@@ -50,7 +51,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         // textview
         textView.setText(mQuestionBank[screenCount].getTextResId()); //set Text to Question text
         textView.setOnClickListener(this);
-        nextButton = (Button) findViewById(R.id.next_button); //Declaring JavaButton Equal to .xml
+        nextButton = (ImageButton) findViewById(R.id.next_button); //Declaring JavaButton Equal to .xml
         // button
         nextButton.setOnClickListener(this); // make sure button is registering on click
     }
