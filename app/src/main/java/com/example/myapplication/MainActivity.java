@@ -127,7 +127,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     }
                 }
                 double firstproportion = (double) (100.0 * questionsCorrect/Answered);
-                double secondproportion = (double) (100.0 * questionsCorrect/screenCount);
+                double secondproportion = (double) (100.0 * questionsCorrect/mQuestionBank.length);
                 if (!bool){
                     showTop(toast.makeText(this, "Percentage Correct Out of Those Answered:" + String.valueOf(firstproportion) + "%" + "\n" + "Percentage Correct Out of Total Questions: " + String.valueOf(secondproportion) + "%", Toast.LENGTH_LONG));
                     nextButton.setText("Quit");
