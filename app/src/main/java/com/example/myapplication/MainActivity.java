@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Toast toast;
     int questionsCorrect = 0;
     int screenCount = 0;
+    boolean bool = false;
 
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
@@ -113,9 +114,30 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     @Override
     public void onClick(View v) { // View - area on the screen which is also incidentally something
         // - happens when a 'click' is registered
-        boolean bool;
+
         if (v.getId() == R.id.textview || v.getId() == R.id.next_button){
-            updateQuestion();
+            if (screenCount != mQuestionBank.length - 1){
+                updateQuestion();
+            }
+            else{
+                int Answered = 0;
+                for (boolean booleanz : answered){
+                    if (booleanz == true){
+                         Answered++;
+                    }
+                }
+                double firstproportion = (double) (100.0 * questionsCorrect/Answered);
+                double secondproportion = (double) (100.0 * questionsCorrect/mQuestionBank.length);
+                if (!bool){
+                    showTop(toast.makeText(this, "Percentage Correct Out of Those Answered:" + String.valueOf(firstproportion) + "%" + "\n" + "Percentage Correct Out of Total Questions: " + String.valueOf(secondproportion) + "%", Toast.LENGTH_LONG));
+                    nextButton.setText("Quit");
+                    bool = true;
+                }
+                else if (bool){
+                    updateQuestion();
+                }
+                //updateQuestion();
+            }
             if (answered[screenCount] == false){
                 open();
             }
@@ -124,24 +146,25 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else if (v.getId() != R.id.next_button && v.getId() != R.id.prev_button) { //if not next
-            if (answered[screenCount] == false){
-                answered[screenCount] = true;
-                block();
-                if (v.getId() == R.id.button) { // is this the button
-                    bool = true; //first button clicked
+            if (screenCount <= mQuestionBank.length - 1){
+                if (answered[screenCount] == false) {
+                    answered[screenCount] = true;
+                    block();
+                    if (v.getId() == R.id.button) { // is this the button
+                        bool = true; //first button clicked
 
-                    //toast.setGravity(Gravity.TOP, 0, 0);
-                } else if (v.getId() == R.id.button2) {
-                    bool = false; //second button clicked
-                }
-                else{
-                    bool = false;
-                }
-                checkAnswer(bool);
-            }
-            else{
+                        //toast.setGravity(Gravity.TOP, 0, 0);
+                    } else if (v.getId() == R.id.button2) {
+                        bool = false; //second button clicked
+                    } else {
+                        bool = false;
+                    }
+                    checkAnswer(bool);
+                } else {
 
+                }
             }
+
         }
         else if (v.getId() == R.id.prev_button){
             if (screenCount != 0){
