@@ -2,6 +2,7 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Gravity;
@@ -17,11 +18,14 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button false_button;
     Button nextButton;
     Button prevButton;
+    Button cheatButton;
     TextView textView;
     Toast toast;
     int questionsCorrect = 0;
     int screenCount = 0;
     boolean bool = false;
+    private static final int REQUEST_CODE_CHEAT = 0;
+
 
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
@@ -51,6 +55,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             booleans = false;
         }
         true_button = (Button) findViewById(R.id.button); // Declaring JavaButton Equal To .xml
+        cheatButton = (Button) findViewById(R.id.cheat_button);
+        cheatButton.setOnClickListener(this);
         // button
         prevButton = (Button) findViewById(R.id.prev_button);
         false_button = (Button) findViewById(R.id.button2); // --
@@ -134,7 +140,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     bool = true;
                 }
                 else if (bool){
-                    updateQuestion();
+                    onStop();
                 }
                 //updateQuestion();
             }
@@ -145,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 block();
             }
         }
-        else if (v.getId() != R.id.next_button && v.getId() != R.id.prev_button) { //if not next
+        else if (v.getId() != R.id.next_button && v.getId() != R.id.prev_button && v.getId() != R.id.cheat_button) { //if not next
             if (screenCount <= mQuestionBank.length - 1){
                 if (answered[screenCount] == false) {
                     answered[screenCount] = true;
@@ -178,7 +184,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
 
         }
-
+        else if (v.getId() == R.id.cheat_button){
+            boolean answerIsTrue = mQuestionBank[screenCount].isAnswerTrue();
+            Intent intent = CheatActivity.newIntent(this, answerIsTrue);
+            startActivityForResult(intent,
+                    REQUEST_CODE_CHEAT);
+        }
     }
 
     private void block(){
