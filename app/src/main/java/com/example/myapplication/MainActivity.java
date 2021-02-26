@@ -2,6 +2,8 @@ package com.example.myapplication;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -18,6 +20,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     Button false_button;
     Button nextButton;
     Button prevButton;
+    private boolean mIsCheater;
     Button cheatButton;
     TextView textView;
     Toast toast;
@@ -77,6 +80,21 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+
+    @SuppressLint("MissingSuperCall")
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) {
+            return;
+        }
+        if (requestCode == REQUEST_CODE_CHEAT) {
+            if (data == null) {
+                return;
+            }
+            mIsCheater =
+                    CheatActivity.wasAnswerShown(data);
+        }
+    }
+
     @Override
     public void onSaveInstanceState(Bundle savedInstanceState){
         super.onSaveInstanceState(savedInstanceState);
@@ -123,6 +141,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
         if (v.getId() == R.id.textview || v.getId() == R.id.next_button){
             if (screenCount != mQuestionBank.length - 1){
+                mIsCheater = false;
                 updateQuestion();
             }
             else{
@@ -207,14 +226,19 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void checkAnswer(boolean bool) {
-        if (bool == mQuestionBank[screenCount].isAnswerTrue()) { //if answer is correct
-            questionsCorrect++; //increase num of questions
-            bool = false; //set bool to false
-            showTop(toast.makeText(this, R.string.correct_toast, Toast.LENGTH_SHORT));
-            // shows correct
-        } else {
-            showTop(toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT));
-            //shows incorrect
+        if (mIsCheater){
+            showTop(toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT));
+        }
+        else{
+            if (bool == mQuestionBank[screenCount].isAnswerTrue()) { //if answer is correct
+                questionsCorrect++; //increase num of questions
+                bool = false; //set bool to false
+                showTop(toast.makeText(this, R.string.correct_toast, Toast.LENGTH_SHORT));
+                // shows correct
+            } else {
+                showTop(toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT));
+                //shows incorrect
+            }
         }
     }
 
