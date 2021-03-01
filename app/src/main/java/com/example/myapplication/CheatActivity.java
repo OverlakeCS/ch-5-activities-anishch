@@ -15,6 +15,7 @@ public class CheatActivity extends AppCompatActivity {
     private boolean mAnswerIsTrue;
     private TextView mAnswerTextView;
     private Button mShowAnswerButton;
+    private boolean mCheated = false;
     private static final String EXTRA_ANSWER_SHOWN =
             "com.bignerdranch.android.geoquiz.answer_shown";
 
@@ -35,7 +36,7 @@ public class CheatActivity extends AppCompatActivity {
                 findViewById(R.id.answer_text_view);
         mShowAnswerButton = (Button)
                 findViewById(R.id.show_answer_button);
-        mShowAnswerButton.setOnClickListener(new View.OnClickListener() {
+        mShowAnswerButton.setOnClickListener((new View.OnClickListener() {
                                                          @Override
                                                          public void onClick(View v) {
                                                              if (mAnswerIsTrue) {
@@ -45,8 +46,26 @@ public class CheatActivity extends AppCompatActivity {
                                                              }
                                                              setAnswerShownResult(true);
                                                          }
-                                                     });
+                                                     }));
+        if (savedInstanceState != null){
+            mAnswerIsTrue = savedInstanceState.getBoolean("answer", false);
+            mCheated = savedInstanceState.getBoolean("cheater", false);
+            if (mCheated){
+                setAnswerShownResult(true);
+                if (mAnswerIsTrue) {
+                    mAnswerTextView.setText(R.string.true_button);
+                } else {
+                    mAnswerTextView.setText(R.string.false_button);
+                }
+            }
+        }
+    }
 
+    @Override
+    protected void onSaveInstanceState(Bundle savedInstanceState){
+        super.onSaveInstanceState(savedInstanceState);
+        savedInstanceState.putBoolean("cheater", mCheated);
+        savedInstanceState.putBoolean("answer", mAnswerIsTrue);
     }
 
     private void setAnswerShownResult(boolean isAnswerShown) {

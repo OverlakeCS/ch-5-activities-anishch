@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private static final int REQUEST_CODE_CHEAT = 0;
 
 
+
     private static final String TAG = "MainActivity";
     private static final String KEY_INDEX = "index";
 
@@ -45,17 +46,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     };
 
     boolean[] answered = new boolean[mQuestionBank.length];
+    boolean[] moreAnswered = new boolean[answered.length];
 
     @Override
     protected void onCreate(Bundle savedInstanceState) { //at Start-Up
+        for (boolean bools : moreAnswered){
+            bools = false;
+        }
+        for (boolean booleans : answered){
+            booleans = false;
+        }
         super.onCreate(savedInstanceState); //open where phone once was
         Log.d(TAG, "onCreate(Bundle) called");
         setContentView(R.layout.activity_main); //set ContentView to what we have in layout/main
         if (savedInstanceState != null){
             screenCount = savedInstanceState.getInt(KEY_INDEX, 0);
-        }
-        for (boolean booleans : answered){
-            booleans = false;
+            mIsCheater = savedInstanceState.getBoolean("show", false);
+            moreAnswered = savedInstanceState.getBooleanArray("show");
         }
         true_button = (Button) findViewById(R.id.button); // Declaring JavaButton Equal To .xml
         cheatButton = (Button) findViewById(R.id.cheat_button);
@@ -92,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
             mIsCheater =
                     CheatActivity.wasAnswerShown(data);
+            moreAnswered[screenCount] = CheatActivity.wasAnswerShown(data);
+        }
+        if (mIsCheater){
+            moreAnswered[screenCount] = true;
         }
     }
 
@@ -100,7 +111,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         super.onSaveInstanceState(savedInstanceState);
         Log.i(TAG, "onSaveInstanceState");
         savedInstanceState.putInt(KEY_INDEX, screenCount);
-
+        savedInstanceState.putBoolean("show", mIsCheater);
+        savedInstanceState.putBooleanArray("cheated", moreAnswered);
     }
 
     @Override
@@ -171,6 +183,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             }
         }
         else if (v.getId() != R.id.next_button && v.getId() != R.id.prev_button && v.getId() != R.id.cheat_button) { //if not next
+
             if (screenCount <= mQuestionBank.length - 1){
                 if (answered[screenCount] == false) {
                     answered[screenCount] = true;
@@ -231,12 +244,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
         else{
             if (bool == mQuestionBank[screenCount].isAnswerTrue()) { //if answer is correct
-                questionsCorrect++; //increase num of questions
-                bool = false; //set bool to false
-                showTop(toast.makeText(this, R.string.correct_toast, Toast.LENGTH_SHORT));
-                // shows correct
+                if (moreAnswered[screenCount] == false){
+                    questionsCorrect++; //increase num of questions
+                    bool = false; //set bool to false
+                    showTop(toast.makeText(this, R.string.correct_toast, Toast.LENGTH_SHORT));
+                    // shows correct
+                }
+                else{
+                    showTop(toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT));
+                }
+
             } else {
-                showTop(toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT));
+                if (moreAnswered[screenCount] == false){
+                    showTop(toast.makeText(this, R.string.incorrect_toast, Toast.LENGTH_SHORT));
+                }
+                else{
+                    showTop(toast.makeText(this, R.string.judgment_toast, Toast.LENGTH_SHORT));
+                }
                 //shows incorrect
             }
         }
